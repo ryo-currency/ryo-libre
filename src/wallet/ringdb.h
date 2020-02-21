@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "common/gulps.hpp"
+
 #include "crypto/crypto.h"
 #include "cryptonote_basic/cryptonote_basic.h"
 #include "wipeable_string.h"
@@ -29,6 +31,7 @@ namespace tools
 {
 class ringdb
 {
+	GULPS_CAT_MAJOR("ringdb");
   public:
 	ringdb(std::string filename, const std::string &genesis);
 	~ringdb();

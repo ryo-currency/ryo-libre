@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -64,7 +64,7 @@ bool add_tx_pub_key_to_extra(std::vector<uint8_t> &tx_extra, const crypto::publi
 std::vector<crypto::public_key> get_additional_tx_pub_keys_from_extra(const std::vector<uint8_t> &tx_extra);
 std::vector<crypto::public_key> get_additional_tx_pub_keys_from_extra(const transaction_prefix &tx);
 bool add_additional_tx_pub_keys_to_extra(std::vector<uint8_t> &tx_extra, const std::vector<crypto::public_key> &additional_pub_keys);
-bool add_payment_id_to_tx_extra(std::vector<uint8_t> &tx_extra, const tx_extra_uniform_payment_id* pid = nullptr);
+bool add_payment_id_to_tx_extra(std::vector<uint8_t> &tx_extra, const tx_extra_uniform_payment_id &pid);
 bool get_payment_id_from_tx_extra(const std::vector<uint8_t> &tx_extra, tx_extra_uniform_payment_id& pid);
 bool get_payment_id_from_tx_extra(const std::vector<tx_extra_field> &tx_extra_fields, tx_extra_uniform_payment_id& pid);
 bool add_extra_nonce_to_tx_extra(std::vector<uint8_t> &tx_extra, const blobdata &extra_nonce);
@@ -80,6 +80,9 @@ struct subaddress_receive_info
 	crypto::key_derivation derivation;
 };
 boost::optional<subaddress_receive_info> is_out_to_acc_precomp(const std::unordered_map<crypto::public_key, subaddress_index> &subaddresses, const crypto::public_key &out_key, const crypto::key_derivation &derivation, const std::vector<crypto::key_derivation> &additional_derivations, size_t output_index, hw::device &hwdev);
+#ifdef HAVE_EC_64
+boost::optional<subaddress_receive_info> is_out_to_acc_precomp_64(const std::unordered_map<crypto::public_key, subaddress_index> &subaddresses, const crypto::public_key &out_key, const crypto::key_derivation &derivation, const std::vector<crypto::key_derivation> &additional_derivations, size_t output_index, hw::device &hwdev);
+#endif
 bool lookup_acc_outs(const account_keys &acc, const transaction &tx, const crypto::public_key &tx_pub_key, const std::vector<crypto::public_key> &additional_tx_public_keys, std::vector<size_t> &outs, uint64_t &money_transfered);
 bool lookup_acc_outs(const account_keys &acc, const transaction &tx, std::vector<size_t> &outs, uint64_t &money_transfered);
 bool get_tx_fee(const transaction &tx, uint64_t &fee);
@@ -165,7 +168,8 @@ std::string obj_to_json_str(T &obj)
 	std::stringstream ss;
 	json_archive<true> ar(ss, true);
 	bool r = ::serialization::serialize(ar, obj);
-	CHECK_AND_ASSERT_MES(r, "", "obj_to_json_str failed: serialization::serialize returned false");
+	GULPS_CAT_MAJOR("formt_utils");
+	GULPS_CHECK_AND_ASSERT_MES(r, "", "obj_to_json_str failed: serialization::serialize returned false");
 	return ss.str();
 }
 //---------------------------------------------------------------
@@ -179,7 +183,31 @@ crypto::hash get_tx_tree_hash(const block &b);
 bool is_valid_decomposed_amount(uint64_t amount);
 void get_hash_stats(uint64_t &tx_hashes_calculated, uint64_t &tx_hashes_cached, uint64_t &block_hashes_calculated, uint64_t &block_hashes_cached);
 
+//------------------------------------------------------------------------------------------------------------------------------
+inline blobdata get_pruned_tx_blob(transaction &tx)
+{
+	GULPS_CAT_MAJOR("formt_utils");
+	std::stringstream ss;
+	binary_archive<true> ba(ss);
+	bool r = tx.serialize_base(ba);
+	GULPS_CHECK_AND_ASSERT_MES(r, cryptonote::blobdata(), "Failed to serialize rct signatures base");
+	return ss.str();
+}
+//------------------------------------------------------------------------------------------------------------------------------
+inline blobdata get_pruned_tx_blob(const blobdata &blobdata)
+{
+	GULPS_CAT_MAJOR("formt_utils");
+	cryptonote::transaction tx;
+
+	if(!cryptonote::parse_and_validate_tx_base_from_blob(blobdata, tx))
+	{
+		GULPS_ERROR("Failed to parse and validate tx from blob");
+		return cryptonote::blobdata();
+	}
+	return get_pruned_tx_blob(tx);
+}
+
 #define CHECKED_GET_SPECIFIC_VARIANT(variant_var, specific_type, variable_name, fail_return_val)                                                                                              \
-	CHECK_AND_ASSERT_MES(variant_var.type() == typeid(specific_type), fail_return_val, "wrong variant type: " << variant_var.type().name() << ", expected " << typeid(specific_type).name()); \
+	GULPS_CHECK_AND_ASSERT_MES(variant_var.type() == typeid(specific_type), fail_return_val, "wrong variant type: " , variant_var.type().name() , ", expected " , typeid(specific_type).name()); \
 	specific_type &variable_name = boost::get<specific_type>(variant_var);
 }

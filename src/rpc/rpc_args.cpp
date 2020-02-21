@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -16,6 +16,7 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
+
 #include "rpc_args.h"
 
 #include "common/command_line.h"
@@ -24,8 +25,11 @@
 #include <boost/asio/ip/address.hpp>
 #include <boost/bind.hpp>
 
+#include "common/gulps.hpp"
+
 namespace cryptonote
 {
+GULPS_CAT_MAJOR("rpc_args");
 rpc_args::descriptors::descriptors()
 	: rpc_bind_ip({"rpc-bind-ip", rpc_args::tr("Specify IP to bind RPC server"), "127.0.0.1"}), rpc_login({"rpc-login", rpc_args::tr("Specify username[:password] required for RPC server"), "", true}), confirm_external_bind({"confirm-external-bind", rpc_args::tr("Confirm rpc-bind-ip value is NOT a loopback (local) IP")}), rpc_access_control_origins({"rpc-access-control-origins", rpc_args::tr("Specify a comma separated list of origins to allow cross origin resource sharing"), ""})
 {
@@ -55,14 +59,14 @@ boost::optional<rpc_args> rpc_args::process(const boost::program_options::variab
 		const auto parsed_ip = boost::asio::ip::address::from_string(config.bind_ip, ec);
 		if(ec)
 		{
-			LOG_ERROR(tr("Invalid IP address given for --") << arg.rpc_bind_ip.name);
+			GULPS_ERROR(tr("Invalid IP address given for --"), arg.rpc_bind_ip.name);
 			return boost::none;
 		}
 
 		if(!parsed_ip.is_loopback() && !command_line::get_arg(vm, arg.confirm_external_bind))
 		{
-			LOG_ERROR(
-				"--" << arg.rpc_bind_ip.name << tr(" permits inbound unencrypted external connections. Consider SSH tunnel or SSL proxy instead. Override with --") << arg.confirm_external_bind.name);
+			GULPS_ERROR(
+				"--", arg.rpc_bind_ip.name, tr(" permits inbound unencrypted external connections. Consider SSH tunnel or SSL proxy instead. Override with --"), arg.confirm_external_bind.name);
 			return boost::none;
 		}
 	}
@@ -77,7 +81,7 @@ boost::optional<rpc_args> rpc_args::process(const boost::program_options::variab
 
 		if(config.login->username.empty())
 		{
-			LOG_ERROR(tr("Username specified with --") << arg.rpc_login.name << tr(" cannot be empty"));
+			GULPS_ERROR(tr("Username specified with --"), arg.rpc_login.name, tr(" cannot be empty"));
 			return boost::none;
 		}
 	}
@@ -87,7 +91,7 @@ boost::optional<rpc_args> rpc_args::process(const boost::program_options::variab
 	{
 		if(!config.login)
 		{
-			LOG_ERROR(arg.rpc_access_control_origins.name << tr(" requires RFC server password --") << arg.rpc_login.name << tr(" cannot be empty"));
+			GULPS_ERROR(arg.rpc_access_control_origins.name, tr(" requires RFC server password --"), arg.rpc_login.name, tr(" cannot be empty"));
 			return boost::none;
 		}
 

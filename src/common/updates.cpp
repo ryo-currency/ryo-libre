@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -18,12 +18,12 @@
 
 #include "updates.h"
 #include "dns_utils.h"
-#include "misc_log_ex.h"
 #include "util.h"
 #include <boost/algorithm/string.hpp>
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "updates"
+#include "common/gulps.hpp"
+
+GULPS_CAT_MAJOR("updates");
 
 namespace tools
 {
@@ -34,7 +34,7 @@ bool check_updates(const std::string &software, const std::string &buildtag, std
     std::vector<std::string> records;
     bool found = false;
 
-    MDEBUG("Checking updates for " << buildtag << " " << software);
+    GULPSF_LOG_L0("Checking updates for {} {}", buildtag, software);
 
     // All four MoneroPulse domains have DNSSEC on and valid
     static const std::vector<std::string> dns_urls = {
@@ -53,7 +53,7 @@ bool check_updates(const std::string &software, const std::string &buildtag, std
       boost::split(fields, record, boost::is_any_of(":"));
       if (fields.size() != 4)
       {
-        MWARNING("Updates record does not have 4 fields: " << record);
+        GULPS_WARN("Updates record does not have 4 fields: ", record);
         continue;
       }
 
@@ -66,7 +66,7 @@ bool check_updates(const std::string &software, const std::string &buildtag, std
           alnum = false;
       if (hash.size() != 64 && !alnum)
       {
-        MWARNING("Invalid hash: " << hash);
+        GULPS_WARN("Invalid hash: ", hash);
         continue;
       }
 
@@ -77,13 +77,13 @@ bool check_updates(const std::string &software, const std::string &buildtag, std
         if (cmp > 0)
           continue;
         if (cmp == 0 && hash != fields[3])
-          MWARNING("Two matches found for " << software << " version " << version << " on " << buildtag);
+          GULPSF_WARN("Two matches found for {} verion {} on {}", software, version, buildtag);
       }
 
       version = fields[2];
       hash = fields[3];
 
-      MINFO("Found new version " << version << " with hash " << hash);
+      GULPSF_INFO("Found new version {} with has {}", version, hash);
       found = true;
     }
     return found;

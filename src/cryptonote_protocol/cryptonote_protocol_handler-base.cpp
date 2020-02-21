@@ -2,7 +2,7 @@
 /// @author rfree (current maintainer in monero.cc project)
 /// @brief This is the place to implement our handlers for protocol network actions, e.g. for ratelimit for download-requests
 
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -19,6 +19,7 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 #include <atomic>
 #include <boost/asio.hpp>
@@ -40,7 +41,6 @@
 #include "syncobj.h"
 
 #include "misc_language.h"
-#include "misc_log_ex.h"
 #include "net/net_utils_base.h"
 #include "pragma_comp_defs.h"
 #include <algorithm>
@@ -63,8 +63,9 @@
 
 #include "cryptonote_core/cryptonote_core.h" // e.g. for the send_stop_signal()
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "net.cn"
+#include "common/gulps.hpp"
+
+GULPS_CAT_MAJOR("cnt_pct_hand_base");
 
 // ################################################################################################
 // ################################################################################################
@@ -125,16 +126,16 @@ void cryptonote_protocol_handler_base::handler_response_blocks_now(size_t packet
 {
 	using namespace epee::net_utils;
 	double delay = 0; // will be calculated
-	MDEBUG("Packet size: " << packet_size);
+	GULPSF_LOG_L1("Packet size: {}", packet_size);
 	do
 	{ // rate limiting
 		//XXX
-		/*if (::cryptonote::core::get_is_stopping()) { 
-			MDEBUG("We are stopping - so abort sleep");
+		/*if (::cryptonote::core::get_is_stopping()) {
+			GULPS_LOG_L1("We are stopping - so abort sleep");
 			return;
 		}*/
-		/*if (m_was_shutdown) { 
-			MDEBUG("m_was_shutdown - so abort sleep");
+		/*if (m_was_shutdown) {
+			GULPS_LOG_L1("m_was_shutdown - so abort sleep");
 			return;
 		}*/
 
@@ -149,7 +150,7 @@ void cryptonote_protocol_handler_base::handler_response_blocks_now(size_t packet
 		{
 			//delay += rand2*0.1;
 			long int ms = (long int)(delay * 1000);
-			MDEBUG("Sleeping for " << ms << " ms before packet_size=" << packet_size); // XXX debug sleep
+			GULPSF_LOG_L1("Sleeping for {} ms before packet_size=", ms, packet_size); // XXX debug sleep
 			boost::this_thread::sleep(boost::posix_time::milliseconds(ms));			   // TODO randomize sleeps
 		}
 	} while(delay > 0);

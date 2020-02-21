@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -29,6 +29,7 @@
 #include "cryptonote_core/cryptonote_tx_utils.h"
 #include "include_base_utils.h"
 #include "rpc/core_rpc_server_commands_defs.h"
+#include "common/gulps.hpp"
 
 namespace tools
 {
@@ -722,40 +723,14 @@ struct wallet_files_doesnt_correspond : public wallet_logic_error
 };
 //----------------------------------------------------------------------------------------------------
 
-#if !defined(_MSC_VER)
-
 template <typename TException, typename... TArgs>
-void throw_wallet_ex(std::string &&loc, const TArgs &... args)
+void throw_wallet_ex(std::string &&cat_major, std::string &&cat_minor, std::string &&loc, const TArgs &... args)
 {
 	TException e(std::move(loc), args...);
-	LOG_PRINT_L0(e.to_string());
+	GULPS_CAT2_LOG_L0(cat_major.c_str(), cat_minor.c_str(), e.to_string());
 	throw e;
 }
 
-#else
-#include <boost/preprocessor/repetition/enum_binary_params.hpp>
-#include <boost/preprocessor/repetition/enum_params.hpp>
-#include <boost/preprocessor/repetition/repeat_from_to.hpp>
-
-template <typename TException>
-void throw_wallet_ex(std::string &&loc)
-{
-	TException e(std::move(loc));
-	LOG_PRINT_L0(e.to_string());
-	throw e;
-}
-
-#define GEN_throw_wallet_ex(z, n, data)                                                       \
-	template <typename TException, BOOST_PP_ENUM_PARAMS(n, typename TArg)>                    \
-	void throw_wallet_ex(std::string &&loc, BOOST_PP_ENUM_BINARY_PARAMS(n, const TArg, &arg)) \
-	{                                                                                         \
-		TException e(std::move(loc), BOOST_PP_ENUM_PARAMS(n, arg));                           \
-		LOG_PRINT_L0(e.to_string());                                                          \
-		throw e;                                                                              \
-	}
-
-BOOST_PP_REPEAT_FROM_TO(1, 6, GEN_throw_wallet_ex, ~)
-#endif
 }
 }
 
@@ -765,13 +740,13 @@ BOOST_PP_REPEAT_FROM_TO(1, 6, GEN_throw_wallet_ex, ~)
 #define THROW_WALLET_EXCEPTION(err_type, ...)                                                                  \
 	do                                                                                                         \
 	{                                                                                                          \
-		LOG_ERROR("THROW EXCEPTION: " << #err_type);                                                           \
-		tools::error::throw_wallet_ex<err_type>(std::string(__FILE__ ":" STRINGIZE(__LINE__)), ##__VA_ARGS__); \
+		GULPS_LOG_ERROR("THROW EXCEPTION: ", #err_type);                                                           \
+		tools::error::throw_wallet_ex<err_type>(gulps_major_cat::c_str(), gulps_minor_cat::c_str(), std::string(__FILE__ ":" STRINGIZE(__LINE__)), ##__VA_ARGS__); \
 	} while(0)
 
 #define THROW_WALLET_EXCEPTION_IF(cond, err_type, ...)                                                         \
 	if(cond)                                                                                                   \
 	{                                                                                                          \
-		LOG_ERROR(#cond << ". THROW EXCEPTION: " << #err_type);                                                \
-		tools::error::throw_wallet_ex<err_type>(std::string(__FILE__ ":" STRINGIZE(__LINE__)), ##__VA_ARGS__); \
+		GULPS_LOG_ERROR(#cond, ". THROW EXCEPTION: ", #err_type);                                                \
+		tools::error::throw_wallet_ex<err_type>(gulps_major_cat::c_str(), gulps_minor_cat::c_str(), std::string(__FILE__ ":" STRINGIZE(__LINE__)), ##__VA_ARGS__); \
 	}

@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -16,6 +16,7 @@
 // STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 #include "common/i18n.h"
 #include "common/util.h"
 #include "file_io_utils.h"
@@ -27,8 +28,9 @@
 #include <string.h>
 #include <string>
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "i18n"
+#include "common/gulps.hpp"
+
+GULPS_CAT_MAJOR("i18n");
 
 static const unsigned char qm_magic[16] = {0x3c, 0xb8, 0x64, 0x18, 0xca, 0xef, 0x9c, 0x95, 0xcd, 0x21, 0x1c, 0xbf, 0x60, 0xa1, 0xbd, 0xdd};
 
@@ -36,7 +38,7 @@ static std::map<std::string, std::string> i18n_entries;
 
 /* Logging isn't initialized yet when this is run */
 /* add std::flush, because std::endl doesn't seem to flush, contrary to expected */
-// #define i18n_log(x) do { std::cout << __FILE__ << ":" << __LINE__ << ": " << x << std::endl; std::cout << std::flush; } while(0)
+// #define i18n_log(x) do { GULPSF_LOG_0("{}:{}:{}", __FILE__, __LINE__, x); } while(0)
 #define i18n_log(x) ((void)0)
 
 std::string i18n_get_language()

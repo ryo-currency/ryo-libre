@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -33,16 +33,18 @@
 #include "wallet/wallet2.h"
 #include <map>
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "debugtools.objectsizes"
+#include "common/gulps.hpp"
+
+
 
 class size_logger
 {
   public:
 	~size_logger()
 	{
+		GULPS_CAT_MAJOR("obj_sizes");
 		for(const auto &i : types)
-			std::cout << std::to_string(i.first) << "\t" << i.second << std::endl;
+			GULPSF_PRINT("{}\t{}",i.first, i.second);
 	}
 	void add(const char *type, size_t size) { types.insert(std::make_pair(size, type)); }
   private:
@@ -56,7 +58,10 @@ int main(int argc, char *argv[])
 
 	tools::on_startup();
 
-	mlog_configure("", true);
+	std::unique_ptr<gulps::gulps_output> out(new gulps::gulps_print_output(gulps::COLOR_WHITE, gulps::TIMESTAMP_ONLY));
+	out->add_filter([](const gulps::message& msg, bool printed, bool logged) -> bool {
+		return true;
+	});
 
 	SL(boost::thread);
 	SL(boost::asio::io_service);

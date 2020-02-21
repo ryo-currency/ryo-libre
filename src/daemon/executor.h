@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -23,13 +23,13 @@
 #include <boost/program_options/variables_map.hpp>
 #include <string>
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "daemon"
+
 
 namespace daemonize
 {
 class t_executor final
 {
+	GULPS_CAT_MAJOR("daemon_exe");
   public:
 	typedef ::daemonize::t_daemon t_daemon;
 

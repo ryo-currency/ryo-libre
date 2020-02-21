@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -18,6 +18,8 @@
 
 #pragma once
 
+#include "common/gulps.hpp"
+
 #include "include_base_utils.h"
 #include "net/http_client.h"
 #include <boost/thread/mutex.hpp>
@@ -28,6 +30,7 @@ namespace tools
 
 class NodeRPCProxy
 {
+	GULPS_CAT_MAJOR("wallet_rpc_proxy");
   public:
 	NodeRPCProxy(epee::net_utils::http::http_simple_client &http_client, boost::mutex &mutex);
 

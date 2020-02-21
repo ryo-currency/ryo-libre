@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project 
+// Copyright (c) 2019, Ryo Currency Project
 //
 // All rights reserved. 
 // 
@@ -16,12 +16,14 @@
 
 #pragma once
 
+#include "common/gulps.hpp"
 #include <inttypes.h>
 
 struct prng_handle;
 
 class prng
 {
+	GULPS_CAT_MAJOR("random");
 public:
 	prng() {}
 	~prng();
@@ -38,7 +40,7 @@ public:
 
 	/**
 	* @brief Get singleton instance. One instance exists per thread.
-	* 
+	*
 	* @return Singleton reference
 	*/
 

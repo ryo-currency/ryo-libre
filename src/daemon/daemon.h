@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -17,10 +17,9 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
-#include <boost/program_options.hpp>
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "daemon"
+#include "common/gulps.hpp"
+#include <boost/program_options.hpp>
 
 namespace daemonize
 {
@@ -29,6 +28,7 @@ struct t_internals;
 
 class t_daemon final
 {
+	GULPS_CAT_MAJOR("daemon");
   public:
 	static void init_options(boost::program_options::options_description &option_spec);
 

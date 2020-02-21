@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -410,6 +410,9 @@ class Blockchain
      * @return true if a block found in common or req_start_block specified, else false
      */
 	bool find_blockchain_supplement(const uint64_t req_start_block, const std::list<crypto::hash> &qblock_ids, std::list<std::pair<cryptonote::blobdata, std::list<cryptonote::blobdata>>> &blocks, uint64_t &total_height, uint64_t &start_height, size_t max_count) const;
+
+	bool find_blockchain_supplement_indexed(const uint64_t req_start_block, const std::list<crypto::hash> &qblock_ids, std::vector<block_complete_entry_v>& blocks,
+			std::vector<COMMAND_RPC_GET_BLOCKS_FAST::block_output_indices>& out_idx, uint64_t &total_height, uint64_t &start_height, size_t max_count) const;
 
 	/**
      * @brief retrieves a set of blocks and their transactions, and possibly other transactions

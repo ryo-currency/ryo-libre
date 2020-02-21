@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -28,8 +28,11 @@
 #include "storages/http_abstract_invoke.h"
 #include "string_tools.h"
 
+#include "common/gulps.hpp"
+
 namespace tools
 {
+GULPS_CAT_MAJOR("perf_timer");
 class t_rpc_client final
 {
   private:
@@ -53,13 +56,13 @@ class t_rpc_client final
 		bool ok = connection.is_open();
 		if(!ok)
 		{
-			fail_msg_writer() << "Couldn't connect to daemon: " << m_http_client.get_host() << ":" << m_http_client.get_port();
+			GULPSF_ERROR("Couldn't connect to daemon: {}:{}", m_http_client.get_host(), m_http_client.get_port());
 			return false;
 		}
 		ok = epee::net_utils::invoke_http_json_rpc("/json_rpc", method_name, req, res, m_http_client, t_http_connection::TIMEOUT());
 		if(!ok)
 		{
-			fail_msg_writer() << "basic_json_rpc_request: Daemon request failed";
+			GULPS_ERROR("basic_json_rpc_request: Daemon request failed");
 			return false;
 		}
 		else
@@ -77,13 +80,13 @@ class t_rpc_client final
 		bool ok = connection.is_open();
 		if(!ok)
 		{
-			fail_msg_writer() << "Couldn't connect to daemon: " << m_http_client.get_host() << ":" << m_http_client.get_port();
+			GULPSF_ERROR("Couldn't connect to daemon: {}:{}", m_http_client.get_host(), m_http_client.get_port());
 			return false;
 		}
 		ok = epee::net_utils::invoke_http_json_rpc("/json_rpc", method_name, req, res, m_http_client, t_http_connection::TIMEOUT());
 		if(!ok || res.status != CORE_RPC_STATUS_OK) // TODO - handle CORE_RPC_STATUS_BUSY ?
 		{
-			fail_msg_writer() << fail_msg << " -- json_rpc_request: " << res.status;
+			GULPSF_ERROR("{} -- json_rpc_request: ", fail_msg, res.status);
 			return false;
 		}
 		else
@@ -101,13 +104,13 @@ class t_rpc_client final
 		bool ok = connection.is_open();
 		if(!ok)
 		{
-			fail_msg_writer() << "Couldn't connect to daemon: " << m_http_client.get_host() << ":" << m_http_client.get_port();
+			GULPSF_ERROR("Couldn't connect to daemon: {}:{}", m_http_client.get_host(), m_http_client.get_port());
 			return false;
 		}
 		ok = epee::net_utils::invoke_http_json(relative_url, req, res, m_http_client, t_http_connection::TIMEOUT());
 		if(!ok || res.status != CORE_RPC_STATUS_OK) // TODO - handle CORE_RPC_STATUS_BUSY ?
 		{
-			fail_msg_writer() << fail_msg << "-- rpc_request: " << res.status;
+		GULPSF_ERROR("{}-- rpc_request: {}", fail_msg, res.status);
 			return false;
 		}
 		else

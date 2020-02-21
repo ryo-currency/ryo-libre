@@ -6,7 +6,7 @@
 
 */
 
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -37,6 +37,7 @@ namespace daemonize
 
 class t_command_parser_executor final
 {
+	GULPS_CAT_MAJOR("cmd_pars_exe");
   private:
 	t_rpc_command_executor m_executor;
 
