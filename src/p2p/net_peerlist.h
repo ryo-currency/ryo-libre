@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -345,7 +345,7 @@ inline bool peerlist_manager::get_peerlist_full(std::list<peerlist_entry> &pl_gr
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::set_peer_just_seen(peerid_type peer, const epee::net_utils::network_address &addr)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 	CRITICAL_REGION_LOCAL(m_peerlist_lock);
 	//find in white list
 	peerlist_entry ple;
@@ -353,12 +353,12 @@ inline bool peerlist_manager::set_peer_just_seen(peerid_type peer, const epee::n
 	ple.id = peer;
 	ple.last_seen = time(NULL);
 	return append_with_peer_white(ple);
-	CATCH_ENTRY_L0("peerlist_manager::set_peer_just_seen()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::set_peer_just_seen()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::append_with_peer_white(const peerlist_entry &ple)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 	if(!is_host_allowed(ple.adr))
 		return true;
 
@@ -383,12 +383,12 @@ inline bool peerlist_manager::append_with_peer_white(const peerlist_entry &ple)
 		m_peers_gray.erase(by_addr_it_gr);
 	}
 	return true;
-	CATCH_ENTRY_L0("peerlist_manager::append_with_peer_white()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::append_with_peer_white()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::append_with_peer_gray(const peerlist_entry &ple)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 	if(!is_host_allowed(ple.adr))
 		return true;
 
@@ -412,12 +412,12 @@ inline bool peerlist_manager::append_with_peer_gray(const peerlist_entry &ple)
 		m_peers_gray.replace(by_addr_it_gr, ple);
 	}
 	return true;
-	CATCH_ENTRY_L0("peerlist_manager::append_with_peer_gray()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::append_with_peer_gray()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::append_with_peer_anchor(const anchor_peerlist_entry &ple)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 
 	CRITICAL_REGION_LOCAL(m_peerlist_lock);
 
@@ -430,12 +430,12 @@ inline bool peerlist_manager::append_with_peer_anchor(const anchor_peerlist_entr
 
 	return true;
 
-	CATCH_ENTRY_L0("peerlist_manager::append_with_peer_anchor()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::append_with_peer_anchor()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::get_random_gray_peer(peerlist_entry &pe)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 
 	CRITICAL_REGION_LOCAL(m_peerlist_lock);
 
@@ -451,12 +451,12 @@ inline bool peerlist_manager::get_random_gray_peer(peerlist_entry &pe)
 
 	return true;
 
-	CATCH_ENTRY_L0("peerlist_manager::get_random_gray_peer()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::get_random_gray_peer()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::remove_from_peer_gray(const peerlist_entry &pe)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 
 	CRITICAL_REGION_LOCAL(m_peerlist_lock);
 
@@ -469,12 +469,12 @@ inline bool peerlist_manager::remove_from_peer_gray(const peerlist_entry &pe)
 
 	return true;
 
-	CATCH_ENTRY_L0("peerlist_manager::remove_from_peer_gray()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::remove_from_peer_gray()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::get_and_empty_anchor_peerlist(std::vector<anchor_peerlist_entry> &apl)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 
 	CRITICAL_REGION_LOCAL(m_peerlist_lock);
 
@@ -489,12 +489,12 @@ inline bool peerlist_manager::get_and_empty_anchor_peerlist(std::vector<anchor_p
 
 	return true;
 
-	CATCH_ENTRY_L0("peerlist_manager::get_and_empty_anchor_peerlist()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::get_and_empty_anchor_peerlist()", false);
 }
 //--------------------------------------------------------------------------------------------------
 inline bool peerlist_manager::remove_from_peer_anchor(const epee::net_utils::network_address &addr)
 {
-	TRY_ENTRY();
+	GULPS_TRY_ENTRY();
 
 	CRITICAL_REGION_LOCAL(m_peerlist_lock);
 
@@ -507,7 +507,7 @@ inline bool peerlist_manager::remove_from_peer_anchor(const epee::net_utils::net
 
 	return true;
 
-	CATCH_ENTRY_L0("peerlist_manager::remove_from_peer_anchor()", false);
+	GULPS_CATCH_ENTRY_L0("peerlist_manager::remove_from_peer_anchor()", false);
 }
 //--------------------------------------------------------------------------------------------------
 }

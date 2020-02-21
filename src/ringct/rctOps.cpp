@@ -1,4 +1,5 @@
-// Copyright (c) 2016, Monero Research Labs
+// Copyright (c) 2019, Ryo Currency Project
+// Portions copyright (c) 2016, Monero Research Labs
 //
 // Author: Shen Noether <shen.noether@gmx.com>
 //
@@ -18,20 +19,22 @@
 // THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "rctOps.h"
-#include "misc_log_ex.h"
+#include "common/gulps.hpp"
 #include <boost/lexical_cast.hpp>
 using namespace crypto;
 using namespace std;
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "ringct"
+//undef RYO_DEFAULT_LOG_CATEGORY
+//#define RYO_DEFAULT_LOG_CATEGORY
 
-#define CHECK_AND_ASSERT_THROW_MES_L1(expr, message) \
+#define CHECK_AND_ASSERT_THROW_MES_L1(expr, ...) \
 	{                                                \
 		if(!(expr))                                  \
 		{                                            \
-			MWARNING(message);                       \
-			throw std::runtime_error(message);       \
+			std::string str;	\
+			str = stream_writer::write(__VA_ARGS__);	\
+			{GULPS_CAT_MAJOR("rctOps"); GULPS_WARN(str);}                       \
+			throw std::runtime_error(str);       \
 		}                                            \
 	}
 
@@ -74,7 +77,8 @@ key skGen()
 //Mainly used in testing
 keyV skvGen(size_t rows)
 {
-	CHECK_AND_ASSERT_THROW_MES(rows > 0, "0 keys requested");
+	GULPS_CAT_MAJOR("rctOps");
+	GULPS_CHECK_AND_ASSERT_THROW_MES(rows > 0, "0 keys requested");
 	keyV rv(rows);
 	for(size_t i = 0; i < rows; i++)
 		skGen(rv[i]);
@@ -249,7 +253,7 @@ rct::key addKeys(const key &A, const key &B)
 	return k;
 }
 
-rct::key addKeys(const keyV &A) 
+rct::key addKeys(const keyV &A)
 {
 	if (A.empty())
 		return rct::identity();

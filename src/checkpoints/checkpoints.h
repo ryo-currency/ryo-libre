@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -21,11 +21,11 @@
 #pragma once
 #include "crypto/hash.h"
 #include "cryptonote_config.h"
-#include "misc_log_ex.h"
+#include "common/gulps.hpp"
 #include <map>
 #include <vector>
 
-#define ADD_CHECKPOINT(h, hash) CHECK_AND_ASSERT(add_checkpoint(h, hash), false);
+#define ADD_CHECKPOINT(h, hash) GULPS_CHECK_AND_ASSERT(add_checkpoint(h, hash), false);
 #define JSON_HASH_FILE_NAME "checkpoints.json"
 
 namespace cryptonote

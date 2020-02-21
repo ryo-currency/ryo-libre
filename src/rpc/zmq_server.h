@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -38,6 +38,7 @@ static constexpr int DEFAULT_RPC_RECV_TIMEOUT_MS = 1000;
 
 class ZmqServer
 {
+	GULPS_CAT_MAJOR("zmq_serv");
   public:
 	ZmqServer(RpcHandler &h);
 

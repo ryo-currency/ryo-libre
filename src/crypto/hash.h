@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -20,12 +20,14 @@
 
 #pragma once
 
+#include "fmt/format.h"
 #include <boost/utility/value_init.hpp>
 #include <iostream>
 #include <stddef.h>
 
 #include "generic-ops.h"
 #include "hex.h"
+#include "string_tools.h"
 #include "span.h"
 
 namespace crypto
@@ -85,5 +87,17 @@ const static crypto::hash null_hash = boost::value_initialized<crypto::hash>();
 const static crypto::hash8 null_hash8 = boost::value_initialized<crypto::hash8>();
 }
 
+namespace fmt 
+{
+template <>
+struct formatter<crypto::hash> : formatter<string_view>
+{
+	template <typename FormatContext>
+	auto format(const crypto::hash &hash, FormatContext &ctx)  -> decltype(ctx.out())  
+	{
+		return formatter<string_view>::format(epee::string_tools::pod_to_hex(hash), ctx);
+	}
+};
+}
 CRYPTO_MAKE_HASHABLE(hash)
 CRYPTO_MAKE_COMPARABLE(hash8)

@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
 // All rights reserved.
@@ -18,6 +18,7 @@
 
 #include <atomic>
 
+#include "common/gulps.hpp"
 #include "blockchain_db/blockchain_db.h"
 #include "cryptonote_basic/blobdatatype.h" // for type blobdata
 #include "ringct/rctTypes.h"
@@ -145,6 +146,7 @@ struct mdb_txn_safe
 // write for block and tx data, so no write transaction is open at the time.
 class BlockchainLMDB : public BlockchainDB
 {
+	GULPS_CAT_MAJOR("db_lmdb");
   public:
 	BlockchainLMDB(bool batch_transactions = false);
 	~BlockchainLMDB();
@@ -207,6 +209,7 @@ class BlockchainLMDB : public BlockchainDB
 	virtual uint64_t get_tx_unlock_time(const crypto::hash &h) const;
 
 	virtual bool get_tx_blob(const crypto::hash &h, cryptonote::blobdata &tx) const;
+	virtual bool get_tx_blob_indexed(const crypto::hash& h, cryptonote::blobdata& bd, std::vector<uint64_t>& o_idx) const;
 
 	virtual uint64_t get_tx_count() const;
 

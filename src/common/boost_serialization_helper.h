@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -24,14 +24,15 @@
 #include <boost/archive/portable_binary_iarchive.hpp>
 #include <boost/archive/portable_binary_oarchive.hpp>
 #include <boost/filesystem/operations.hpp>
-#include "misc_log_ex.h"
+#include "common/gulps.hpp"
 
 namespace tools
 {
 template <class t_object>
 bool serialize_obj_to_file(t_object &obj, const std::string &file_path)
 {
-	TRY_ENTRY();
+	GULPS_CAT_MAJOR("serialization_helper");
+	GULPS_TRY_ENTRY();
 #if defined(_MSC_VER)
 	// Need to know HANDLE of file to call FlushFileBuffers
 	HANDLE data_file_handle = ::CreateFile(file_path.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -79,13 +80,14 @@ bool serialize_obj_to_file(t_object &obj, const std::string &file_path)
 #endif
 
 	return true;
-	CATCH_ENTRY_L0("serialize_obj_to_file", false);
+	GULPS_CATCH_ENTRY_L0("serialize_obj_to_file", false);
 }
 
 template <class t_object>
 bool unserialize_obj_from_file(t_object &obj, const std::string &file_path)
 {
-	TRY_ENTRY();
+	GULPS_CAT_MAJOR("serialization_helper");
+	GULPS_TRY_ENTRY();
 
 	std::ifstream data_file;
 	data_file.open(file_path, std::ios_base::binary | std::ios_base::in);
@@ -109,6 +111,6 @@ bool unserialize_obj_from_file(t_object &obj, const std::string &file_path)
 		a >> obj;
 	}
 	return !data_file.fail();
-	CATCH_ENTRY_L0("unserialize_obj_from_file", false);
+	GULPS_CATCH_ENTRY_L0("unserialize_obj_from_file", false);
 }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -28,6 +28,9 @@
 
 namespace daemonizer
 {
+GULPS_CAT_MAJOR("win_dmnzer");
+extern gulps_log_level log_scr, log_dsk;
+
 namespace
 {
 const command_line::arg_descriptor<bool> arg_install_service = {
@@ -147,7 +150,6 @@ inline bool daemonize(
 	}
 	else // interactive
 	{
-		//LOG_PRINT_L0("Ryo '" << RYO_RELEASE_NAME << "' (" << RYO_VERSION_FULL);
 		return executor.run_interactive(vm);
 	}
 

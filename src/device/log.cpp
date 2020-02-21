@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -18,7 +18,7 @@
 //
 
 #include "log.hpp"
-#include "misc_log_ex.h"
+#include "common/gulps.hpp"
 
 namespace hw
 {
@@ -27,8 +27,7 @@ namespace hw
 namespace ledger
 {
 
-//#undef RYO_DEFAULT_LOG_CATEGORY
-//#define RYO_DEFAULT_LOG_CATEGORY "device.ledger"
+//undef RYO_DEFAULT_LOG_CATEGORY
 
 void buffer_to_str(char *to_buff, size_t to_len, const char *buff, size_t len)
 {

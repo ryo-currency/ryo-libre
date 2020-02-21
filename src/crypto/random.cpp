@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project 
+// Copyright (c) 2019, Ryo Currency Project
 //
 // All rights reserved. 
 // 
@@ -60,13 +60,13 @@ prng::~prng()
 #	if defined(_WIN32)
 	if(!CryptReleaseContext(hnd->prov, 0))
 	{
-		std::cerr << "CryptReleaseContext" << std::endl;
+		GULPS_ERROR("CryptReleaseContext");
 		std::abort();
 	}
 #	else
 	if(close(hnd->fd) < 0)
 	{
-		std::cerr << "Exit Failure :: close /dev/urandom " << std::endl; 
+		GULPS_ERROR("Exit Failure :: close /dev/urandom ");
 		std::abort();
 	}
 #	endif
@@ -78,18 +78,18 @@ void prng::start()
 {
 	hnd = new prng_handle;
 #if defined(CRYPTO_TEST_ONLY_FIXED_PRNG)
-	std::cerr << "WARNING!!! Fixed PRNG is active! This should be done in tests only!" << std::endl;
+	GULPS_ERROR("WARNING!!! Fixed PRNG is active! This should be done in tests only!");
 	return;
 #elif defined(_WIN32)
 	if(!CryptAcquireContext(&hnd->prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_SILENT))
 	{
-		std::cerr << "CryptAcquireContext Failed " << std::endl;
+		GULPS_ERROR("CryptAcquireContext Failed ");
 		std::abort();
 	}
 #else
 	if((hnd->fd = open("/dev/urandom", O_RDONLY | O_NOCTTY | O_CLOEXEC)) < 0)
 	{
-		std::cerr << "Exit Failure :: open /dev/urandom" << std::endl;
+		GULPS_ERROR("Exit Failure :: open /dev/urandom");
 		std::abort();
 	}
 #endif
@@ -98,7 +98,7 @@ void prng::start()
 
 	if(test[0] == 0 && test[1] == 0)
 	{
-		std::cerr << "PRNG self-check failed!" << std::endl;
+		GULPS_ERROR("PRNG self-check failed!");
 		std::abort();
 	}
 }
@@ -125,7 +125,7 @@ void prng::generate_random(uint8_t* output, size_t size_bytes)
 			output += 200;
 			size_bytes -= 200;
 		}
-		
+
 		if(size_bytes > 0)
 		{
 			uint8_t last[200];
@@ -149,7 +149,7 @@ void prng::generate_system_random_bytes(uint8_t* result, size_t n)
 #elif defined(_WIN32)
 	if(!CryptGenRandom(hnd->prov, (DWORD)n, result))
 	{
-		std::cerr << "CryptGenRandom Failed " << std::endl;
+		GULPS_ERROR("CryptGenRandom Failed ");
 		std::abort();
 	}
 #else
@@ -164,13 +164,13 @@ void prng::generate_system_random_bytes(uint8_t* result, size_t n)
 		{
 			if(errno != EINTR)
 			{
-				std::cerr << "EXIT_FAILURE :: read /dev/urandom" << std::endl;
+				GULPS_ERROR("EXIT_FAILURE :: read /dev/urandom");
 				std::abort();
 			}
 		}
 		else if(res == 0)
 		{
-			std::cerr << "EXIT_FAILURE :: read /dev/urandom: end of file " << std::endl;
+			GULPS_ERROR("EXIT_FAILURE :: read /dev/urandom: end of file ");
 			std::abort();
 		}
 		else
@@ -178,6 +178,6 @@ void prng::generate_system_random_bytes(uint8_t* result, size_t n)
 			result += res;
 			n -= (size_t)res;
 		}
-	}    
+	}
 #endif
 }

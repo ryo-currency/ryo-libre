@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -22,7 +22,8 @@
 #ifdef HAVE_PCSC
 #include "device_ledger.hpp"
 #endif
-#include "misc_log_ex.h"
+
+#include "common/gulps.hpp"
 
 namespace hw
 {
@@ -50,12 +51,12 @@ device &get_device(const std::string device_descriptor)
 	auto device = devices.registry.find(device_descriptor);
 	if(device == devices.registry.end())
 	{
-		MERROR("device not found in registry: '" << device_descriptor << "'\n"
-												 << "known devices:");
+		GULPS_CAT_MAJOR("device");
+		GULPS_ERROR("device not found in registry: '", device_descriptor, "'\nknown devices:");
 
 		for(const auto &sm_pair : devices.registry)
 		{
-			MERROR(" - " << sm_pair.first);
+			GULPS_ERROR(" - " , sm_pair.first);
 		}
 		throw std::runtime_error("device not found: " + device_descriptor);
 	}

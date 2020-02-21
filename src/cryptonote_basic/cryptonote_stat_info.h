@@ -1,4 +1,4 @@
-// Copyright (c) 2018, Ryo Currency Project
+// Copyright (c) 2019, Ryo Currency Project
 // Portions copyright (c) 2014-2018, The Monero Project
 //
 // Portions of this file are available under BSD-3 license. Please see ORIGINAL-LICENSE for details
@@ -31,7 +31,7 @@ struct core_stat_info
 	uint64_t alternative_blocks;
 	std::string top_block_id_str;
 
-	BEGIN_KV_SERIALIZE_MAP()
+	BEGIN_KV_SERIALIZE_MAP(core_stat_info)
 	KV_SERIALIZE(tx_pool_size)
 	KV_SERIALIZE(blockchain_height)
 	KV_SERIALIZE(mining_speed)
